@@ -898,72 +898,8 @@
 </div>
 
 
-<script>
-  // ============================================================
-  // PAGE NAVIGATION
-  // KEY CONCEPT: JavaScript DOM manipulation
-  // We show/hide pages by toggling a CSS class.
-  // document.getElementById finds an element by its id attribute.
-  // ============================================================
 
-  function showPage(name) {
-    // Remove 'active' from all pages
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    // Add 'active' to the target page
-    document.getElementById('page-' + name).classList.add('active');
-    // Scroll back to top
-    window.scrollTo(0, 0);
-  }
-
-  // ============================================================
-  // MODAL LOGIC
-  // ============================================================
-
-  function openModal(type) {
-    document.getElementById('modal-' + type).classList.add('open');
-    document.body.style.overflow = 'hidden'; // prevent background scroll
-  }
-
-  function closeModal(type) {
-    document.getElementById('modal-' + type).classList.remove('open');
-    document.body.style.overflow = '';
-  }
-
-  // Close modal if user clicks the dark overlay (not the modal itself)
-  function closeModalOnBg(event, type) {
-    if (event.target === event.currentTarget) closeModal(type);
-  }
-
-  // Switch between sign in and sign up
-  function switchModal(from, to) {
-    closeModal(from);
-    openModal(to);
-  }
-
-  // Close modal on Escape key
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') {
-      ['signin', 'signup'].forEach(closeModal);
-    }
-  });
-
-  // ============================================================
-  // BASIC WRITE TOOLBAR (demo only)
-  // ============================================================
-  function formatText(type) {
-    const body = document.getElementById('draft-body');
-    const msgs = {
-      bold: '**bold text**',
-      italic: '_italic text_',
-      h1: '\n# Heading 1\n',
-      h2: '\n## Heading 2\n',
-      quote: '\n> Your blockquote here\n',
-      code: '\n```\ncode here\n```\n'
-    };
-    body.value += msgs[type] || '';
-    body.focus();
-  }
-</script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js" integrity="sha512-NcZdtrT77bJr4STcmsGAESr06BYGE8woZdSdEgqnpyqac7sugNO+Tr4bGwGF3MsnEkGKhU2KL2xh6Ec+BqsaHA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="script.js"></script>
 </body>
 </html>
