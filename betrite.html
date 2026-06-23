@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Betrite — Think. Write. Become.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── Variables ─────────────────────────────────────────── */
+    :root {
+      --cream:    #f8f6f2;
+      --black:    #1a1a1a;
+      --dark:     #242424;
+      --gray:     #6b6b6b;
+      --border:   #ddd7cf;
+      --green:    #1a8917;
+      --green-bg: #1a8917;
+      --white:    #ffffff;
+      --font-serif: 'Lora', Georgia, serif;
+      --font-sans:  'Source Sans 3', system-ui, sans-serif;
+    }
+
+    /* ── Reset ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--cream);
+      color: var(--black);
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── PAGES (only one visible at a time) ────────────────── */
+    .page { display: none; flex-direction: column; min-height: 100vh; }
+    .page.active { display: flex; }
+
+    /* ── NAVBAR ────────────────────────────────────────────── */
+    /*
+      KEY CONCEPT: Flexbox navbar
+      justify-content: space-between → logo far left, actions far right
+      The border-bottom is the thin separator line you see on Medium
+    */
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 56px;
+      border-bottom: 1px solid var(--border);
+      background: var(--cream);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-logo {
+      font-family: var(--font-serif);
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--black);
+      text-decoration: none;
+      letter-spacing: -0.5px;
+      cursor: pointer;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+
+    .nav-link {
+      font-size: 15px;
+      color: var(--dark);
+      text-decoration: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      padding: 0;
+      transition: opacity 0.15s;
+    }
+    .nav-link:hover { opacity: 0.65; }
+
+    .btn-signin {
+      font-size: 15px;
+      color: var(--dark);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      transition: opacity 0.15s;
+    }
+    .btn-signin:hover { opacity: 0.65; }
+
+    .btn-getstarted {
+      background: var(--black);
+      color: var(--white);
+      border: none;
+      padding: 11px 22px;
+      border-radius: 100px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      transition: background 0.15s;
+    }
+    .btn-getstarted:hover { background: #333; }
+
+    /* ── HERO SECTION ──────────────────────────────────────── */
+    /*
+      KEY CONCEPT: CSS Grid for hero layout
+      Two columns: text on left (1fr), illustration on right (1fr)
+      The illustration is decorative and overflows slightly.
+    */
+    .hero {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 45% 55%;
+      align-items: center;
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 80px 56px 0;
+      width: 100%;
+      min-height: calc(100vh - 62px - 56px);
+      overflow: hidden;
+    }
+
+    
+    .hero-text {
+      padding-right: 40px;
+      animation: fadeUp 0.8s ease;
+    }
+
+    .hero-art {
+      animation: fadeUp 2s ease;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(24px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+
+    .hero-title {
+      font-family: var(--font-serif);
+      font-size: clamp(60px, 8vw, 110px); /* scales with viewport */
+      font-weight: 700;
+      line-height: 1.07;
+      letter-spacing: -2px;
+      color: var(--black);
+      margin-bottom: 28px;
+    }
+
+    .hero-subtitle {
+      font-size: 18px;
+      line-height: 1.6;
+      color: var(--dark);
+      margin-bottom: 36px;
+      max-width: 420px;
+    }
+
+    .btn-startreading {
+      display: inline-block;
+      background: var(--black);
+      color: var(--white);
+      border: none;
+      padding: 18px 42px;
+      border-radius: 100px;
+      font-size: 18px;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      transition: background 0.15s;
+      text-decoration: none;
+    }
+    .btn-startreading:hover { background: #333; }
+
+    
+    /* ── HERO ILLUSTRATION ─────────────────────────────────── */
+.hero-art {
+  position: relative;
+  height: 490px;
+  border-radius: 40px;
+
+  background:
+    linear-gradient(
+      to right,
+      rgba(248,246,242,0.95) 0%,
+      rgba(248,246,242,0.70) 25%,
+      rgba(248,246,242,0.10) 55%
+    ),
+    url("frontpagedesign.png");
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  overflow: hidden;
+
+  box-shadow: 0 0px 0px rgba(0,0,0,0.05);
+}
+
+    /* ── FOOTER ────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 16px 40px;
+      background: var(--cream);
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .footer-inner a, .footer-inner button {
+      font-size: 13px;
+      color: var(--gray);
+      text-decoration: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      transition: color 0.15s;
+    }
+    .footer-inner a:hover, .footer-inner button:hover { color: var(--black); }
+
+    /* ── MODAL OVERLAY ─────────────────────────────────────── */
+    /*
+      KEY CONCEPT: position: fixed + z-index
+      Fixed removes the element from normal flow and positions it
+      relative to the viewport. High z-index keeps it on top.
+    */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;                    /* shorthand for top/right/bottom/left: 0 */
+      background: rgba(0,0,0,0.55);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: var(--white);
+      border-radius: 4px;
+      padding: 48px 40px 40px;
+      width: 100%;
+      max-width: 420px;
+      position: relative;
+      animation: modalIn 0.2s ease;
+    }
+
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--gray);
+      font-size: 22px;
+      line-height: 1;
+      padding: 4px 8px;
+    }
+    .modal-close:hover { color: var(--black); }
+
+    .modal h2 {
+      font-family: var(--font-serif);
+      font-size: 26px;
+      font-weight: 700;
+      margin-bottom: 28px;
+      text-align: center;
+    }
+
+    .modal-divider {
+      text-align: center;
+      font-size: 13px;
+      color: var(--gray);
+      margin: 20px 0;
+      position: relative;
+    }
+    .modal-divider::before, .modal-divider::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 42%;
+      height: 1px;
+      background: var(--border);
+    }
+    .modal-divider::before { left: 0; }
+    .modal-divider::after  { right: 0; }
+
+    .social-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      background: none;
+      font-size: 15px;
+      font-family: var(--font-sans);
+      cursor: pointer;
+      margin-bottom: 12px;
+      transition: background 0.15s, border-color 0.15s;
+      color: var(--dark);
+    }
+    .social-btn:hover { background: var(--cream); border-color: #bbb; }
+
+    .modal-input {
+      display: block;
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 15px;
+      font-family: var(--font-sans);
+      color: var(--dark);
+      background: var(--white);
+      margin-bottom: 12px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .modal-input:focus { border-color: var(--black); }
+
+    .modal-submit {
+      width: 100%;
+      padding: 13px;
+      background: var(--green);
+      color: white;
+      border: none;
+      border-radius: 100px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      transition: background 0.15s;
+      margin-bottom: 16px;
+    }
+    .modal-submit:hover { background: #147012; }
+
+    .modal-footer-text {
+      font-size: 13px;
+      color: var(--gray);
+      text-align: center;
+      line-height: 1.6;
+    }
+    .modal-footer-text a, .modal-footer-text button {
+      color: var(--dark);
+      font-weight: 600;
+      text-decoration: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      font-size: 13px;
+    }
+    .modal-footer-text a:hover, .modal-footer-text button:hover {
+      text-decoration: underline;
+    }
+
+    /* ── MEMBERSHIP PAGE ───────────────────────────────────── */
+    .membership-hero {
+      text-align: center;
+      padding: 80px 40px 60px;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .membership-hero h1 {
+      font-family: var(--font-serif);
+      font-size: 52px;
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 20px;
+      letter-spacing: -1px;
+    }
+
+    .membership-hero p {
+      font-size: 18px;
+      color: var(--gray);
+      line-height: 1.6;
+      margin-bottom: 40px;
+    }
+
+    .plans-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      max-width: 760px;
+      margin: 0 auto 60px;
+      padding: 0 40px;
+    }
+
+    .plan-card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 32px 28px;
+      background: var(--white);
+    }
+
+    .plan-card.featured {
+      border-color: var(--black);
+      background: var(--black);
+      color: var(--white);
+    }
+
+    .plan-label {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+      opacity: 0.6;
+    }
+
+    .plan-price {
+      font-family: var(--font-serif);
+      font-size: 42px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .plan-price span {
+      font-size: 18px;
+      font-weight: 400;
+    }
+
+    .plan-billed {
+      font-size: 14px;
+      opacity: 0.55;
+      margin-bottom: 24px;
+    }
+
+    .plan-features {
+      list-style: none;
+      margin-bottom: 28px;
+    }
+
+    .plan-features li {
+      font-size: 15px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      line-height: 1.4;
+    }
+
+    .plan-card.featured .plan-features li {
+      border-bottom-color: rgba(255,255,255,0.12);
+    }
+
+    .plan-btn {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      border-radius: 100px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      text-align: center;
+      transition: background 0.15s, color 0.15s;
+      border: 1px solid var(--black);
+      background: none;
+      color: var(--black);
+    }
+
+    .plan-card.featured .plan-btn {
+      background: var(--white);
+      color: var(--black);
+      border-color: var(--white);
+    }
+
+    .plan-btn:hover { background: var(--black); color: var(--white); }
+    .plan-card.featured .plan-btn:hover { background: #ddd; }
+
+    /* ── OUR STORY PAGE ────────────────────────────────────── */
+    .story-content {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 72px 40px;
+    }
+
+    .story-content h1 {
+      font-family: var(--font-serif);
+      font-size: 46px;
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 32px;
+      letter-spacing: -1px;
+    }
+
+    .story-content p {
+      font-family: var(--font-serif);
+      font-size: 20px;
+      line-height: 1.75;
+      color: var(--dark);
+      margin-bottom: 28px;
+    }
+
+    .story-content h2 {
+      font-family: var(--font-serif);
+      font-size: 28px;
+      font-weight: 700;
+      margin: 48px 0 16px;
+    }
+
+    /* ── WRITE PAGE ────────────────────────────────────────── */
+    .write-page-inner {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 60px 40px;
+      flex: 1;
+    }
+
+    .write-title-input {
+      width: 100%;
+      border: none;
+      background: transparent;
+      font-family: var(--font-serif);
+      font-size: 42px;
+      font-weight: 700;
+      color: var(--black);
+      outline: none;
+      margin-bottom: 16px;
+      letter-spacing: -1px;
+      resize: none;
+      line-height: 1.2;
+    }
+
+    .write-title-input::placeholder { color: #ccc; }
+
+    .write-body-input {
+      width: 100%;
+      border: none;
+      background: transparent;
+      font-family: var(--font-serif);
+      font-size: 21px;
+      color: var(--dark);
+      outline: none;
+      resize: none;
+      line-height: 1.75;
+      min-height: 400px;
+    }
+
+    .write-body-input::placeholder { color: #ccc; }
+
+    .write-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 40px;
+      border-bottom: 1px solid var(--border);
+      background: var(--cream);
+    }
+
+    .toolbar-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--gray);
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 500;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .toolbar-btn:hover { background: var(--border); color: var(--black); }
+
+    .toolbar-sep {
+      width: 1px;
+      height: 20px;
+      background: var(--border);
+      margin: 0 4px;
+    }
+
+    .write-publish-btn {
+      margin-left: auto;
+      background: var(--green);
+      color: white;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 100px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: var(--font-sans);
+    }
+
+    .write-publish-btn:hover { background: #147012; }
+
+    /* ── RESPONSIVE ────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .navbar { padding: 14px 20px; }
+      .hero { grid-template-columns: 1fr; padding: 40px 20px 0; gap: 0; min-height: auto; }
+      .hero-text { padding-right: 0; }
+      .hero-art { height: 300px; margin-top: 32px; }
+      .art-flower { width: 180px; height: 180px; top: 0; right: 0; }
+      .art-card { width: 220px; height: 160px; bottom: 0; right: 0; }
+      .hero-title { font-size: 48px; }
+      .plans-grid { grid-template-columns: 1fr; padding: 0 20px; }
+      .story-content { padding: 48px 20px; }
+      .write-page-inner { padding: 40px 20px; }
+      .nav-links .nav-link:not(:last-child) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ============================================================
+  HOME PAGE
+============================================================ -->
+<div class="page active" id="page-home">
+
+  <nav class="navbar">
+    <a class="nav-logo" onclick="showPage('home')">Betrite</a>
+    <div class="nav-links">
+      <button class="nav-link" onclick="showPage('story')">Our story</button>
+      <button class="nav-link" onclick="showPage('membership')">Membership</button>
+      <button class="nav-link" onclick="showPage('write')">Write</button>
+      <button class="btn-signin" onclick="openModal('signin')">Sign in</button>
+      <button class="btn-getstarted" onclick="openModal('signup')">Get started</button>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-text">
+      <h1 class="hero-title">Think<br>Write<br>Become</h1>
+      <p class="hero-subtitle">Become better. Write Betrite.</p>
+      <button class="btn-startreading" onclick="openModal('signup')">Start reading</button>
+    </div>
+
+    <!-- Minimal studio desk hero -->
+    <div class="hero-art"></div>
+  </section>
+
+  <footer>
+    <div class="footer-inner">
+      <a onclick="showPage('story')">Help</a>
+      <a href="#">Status</a>
+      <a onclick="showPage('story')">About</a>
+      <a href="#">Careers</a>
+      <a href="#">Press</a>
+      <a href="#">Blog</a>
+      <a href="#">Privacy</a>
+      <a href="#">Rules</a>
+      <a href="#">Terms</a>
+      <a href="#">Text to speech</a>
+    </div>
+  </footer>
+</div>
+
+
+<!-- ============================================================
+  OUR STORY PAGE
+============================================================ -->
+<div class="page" id="page-story">
+  <nav class="navbar">
+    <a class="nav-logo" onclick="showPage('home')">Betrite</a>
+    <div class="nav-links">
+      <button class="nav-link" onclick="showPage('story')">Our story</button>
+      <button class="nav-link" onclick="showPage('membership')">Membership</button>
+      <button class="nav-link" onclick="showPage('write')">Write</button>
+      <button class="btn-signin" onclick="openModal('signin')">Sign in</button>
+      <button class="btn-getstarted" onclick="openModal('signup')">Get started</button>
+    </div>
+  </nav>
+
+  <div class="story-content">
+    <h1>Everyone has a story to tell.</h1>
+    <p>
+      Betrite is an open platform where readers find dynamic thinking, and where expert and undiscovered voices can share their writing on any topic.
+    </p>
+    <p>
+      We believe in quality over quantity, depth over noise, and the idea that a great essay can change the way you think. Our platform is built for ideas — not ads, not viral nonsense, not outrage.
+    </p>
+    <h2>Built for writers, by people who love writing</h2>
+    <p>
+      We've spent years thinking about what a platform for serious writers should look like. The result is Betrite — clean, distraction-free, and rewarding for both reader and writer.
+    </p>
+    <p>
+      Writers on Betrite earn money from their readership. The more your work resonates, the more you earn. No followers required, no virality needed — just good writing.
+    </p>
+    <h2>A new economic model for ideas</h2>
+    <p>
+      Betrite Partner Program distributes subscription revenue directly to writers based on how much time paying members spend with their work. It's simple, transparent, and fair.
+    </p>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <a onclick="showPage('story')">Help</a>
+      <a href="#">Status</a>
+      <a onclick="showPage('story')">About</a>
+      <a href="#">Careers</a>
+      <a href="#">Press</a>
+      <a href="#">Blog</a>
+      <a href="#">Privacy</a>
+      <a href="#">Rules</a>
+      <a href="#">Terms</a>
+      <a href="#">Text to speech</a>
+    </div>
+  </footer>
+</div>
+
+
+<!-- ============================================================
+  MEMBERSHIP PAGE
+============================================================ -->
+<div class="page" id="page-membership">
+  <nav class="navbar">
+    <a class="nav-logo" onclick="showPage('home')">Betrite</a>
+    <div class="nav-links">
+      <button class="nav-link" onclick="showPage('story')">Our story</button>
+      <button class="nav-link" onclick="showPage('membership')">Membership</button>
+      <button class="nav-link" onclick="showPage('write')">Write</button>
+      <button class="btn-signin" onclick="openModal('signin')">Sign in</button>
+      <button class="btn-getstarted" onclick="openModal('signup')">Get started</button>
+    </div>
+  </nav>
+
+  <div class="membership-hero">
+    <h1>Read without limits.</h1>
+    <p>Unlimited access to the best ideas, stories, and thinking on the internet. Support the writers you love.</p>
+  </div>
+
+  <div class="plans-grid">
+    <div class="plan-card">
+      <div class="plan-label">Free</div>
+      <div class="plan-price">$0</div>
+      <div class="plan-billed">forever free</div>
+      <ul class="plan-features">
+        <li>✓ 3 free articles per month</li>
+        <li>✓ Access to top stories</li>
+        <li>✓ Basic newsletter</li>
+        <li style="opacity:0.4">✗ Unlimited reading</li>
+        <li style="opacity:0.4">✗ Offline reading</li>
+        <li style="opacity:0.4">✗ Support writers directly</li>
+      </ul>
+      <button class="plan-btn" onclick="openModal('signup')">Get started free</button>
+    </div>
+
+    <div class="plan-card featured">
+      <div class="plan-label">Member</div>
+      <div class="plan-price">$5 <span>/ month</span></div>
+      <div class="plan-billed">or $50/year — save 17%</div>
+      <ul class="plan-features">
+        <li>✓ Unlimited reading</li>
+        <li>✓ Exclusive stories</li>
+        <li>✓ Offline reading</li>
+        <li>✓ Audio articles</li>
+        <li>✓ Support writers directly</li>
+        <li>✓ Less ads across the web</li>
+      </ul>
+      <button class="plan-btn" onclick="openModal('signup')">Become a member</button>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <a onclick="showPage('story')">Help</a>
+      <a href="#">Status</a>
+      <a onclick="showPage('story')">About</a>
+      <a href="#">Careers</a>
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+    </div>
+  </footer>
+</div>
+
+
+<!-- ============================================================
+  WRITE PAGE
+============================================================ -->
+<div class="page" id="page-write">
+  <nav class="navbar">
+    <a class="nav-logo" onclick="showPage('home')">Betrite</a>
+    <div class="nav-links">
+      <button class="btn-signin" onclick="openModal('signin')">Sign in to publish</button>
+      <button class="write-publish-btn" onclick="openModal('signup')">Publish</button>
+    </div>
+  </nav>
+
+  <div class="write-toolbar">
+    <button class="toolbar-btn" onclick="formatText('bold')"><strong>B</strong></button>
+    <button class="toolbar-btn" onclick="formatText('italic')"><em>I</em></button>
+    <div class="toolbar-sep"></div>
+    <button class="toolbar-btn" onclick="formatText('h1')">H1</button>
+    <button class="toolbar-btn" onclick="formatText('h2')">H2</button>
+    <div class="toolbar-sep"></div>
+    <button class="toolbar-btn" onclick="formatText('quote')">"</button>
+    <button class="toolbar-btn" onclick="formatText('code')">{ }</button>
+    <div class="toolbar-sep"></div>
+    <button class="toolbar-btn">🖼 Image</button>
+    <button class="toolbar-btn">🔗 Link</button>
+  </div>
+
+  <div class="write-page-inner">
+    <textarea class="write-title-input" placeholder="Title" rows="2" id="draft-title"></textarea>
+    <textarea class="write-body-input" placeholder="Tell your story…" id="draft-body"></textarea>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <a onclick="showPage('story')">Help</a>
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+    </div>
+  </footer>
+</div>
+
+
+<!-- ============================================================
+  SIGN IN MODAL
+============================================================ -->
+<div class="modal-overlay" id="modal-signin" onclick="closeModalOnBg(event, 'signin')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('signin')">✕</button>
+    <h2>Welcome back to Betrite.</h2>
+
+    <button class="social-btn">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Sign in with Google
+    </button>
+    <button class="social-btn">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+      Sign in with Facebook
+    </button>
+
+    <div class="modal-divider">or</div>
+
+    <input class="modal-input" type="email" placeholder="Email address" />
+    <button class="modal-submit" onclick="closeModal('signin')">Continue with email</button>
+
+    <p class="modal-footer-text">
+      No account? <button onclick="switchModal('signin','signup')">Create one</button>
+      <br><br>
+      <a href="#">Forgot password?</a>
+    </p>
+  </div>
+</div>
+
+
+<!-- ============================================================
+  SIGN UP MODAL
+============================================================ -->
+<div class="modal-overlay" id="modal-signup" onclick="closeModalOnBg(event, 'signup')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('signup')">✕</button>
+    <h2>Join Betrite.</h2>
+
+    <button class="social-btn">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Sign up with Google
+    </button>
+    <button class="social-btn">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+      Sign up with Facebook
+    </button>
+
+    <div class="modal-divider">or</div>
+
+    <input class="modal-input" type="email" placeholder="Email address" />
+    <button class="modal-submit" onclick="closeModal('signup')">Continue with email</button>
+
+    <p class="modal-footer-text">
+      Already have an account? <button onclick="switchModal('signup','signin')">Sign in</button>
+      <br><br>
+      Click "Continue" to agree to Medium's <a href="#">Terms of Service</a> and acknowledge the <a href="#">Privacy Policy</a>.
+    </p>
+  </div>
+</div>
+
+
+<script>
+  // ============================================================
+  // PAGE NAVIGATION
+  // KEY CONCEPT: JavaScript DOM manipulation
+  // We show/hide pages by toggling a CSS class.
+  // document.getElementById finds an element by its id attribute.
+  // ============================================================
+
+  function showPage(name) {
+    // Remove 'active' from all pages
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    // Add 'active' to the target page
+    document.getElementById('page-' + name).classList.add('active');
+    // Scroll back to top
+    window.scrollTo(0, 0);
+  }
+
+  // ============================================================
+  // MODAL LOGIC
+  // ============================================================
+
+  function openModal(type) {
+    document.getElementById('modal-' + type).classList.add('open');
+    document.body.style.overflow = 'hidden'; // prevent background scroll
+  }
+
+  function closeModal(type) {
+    document.getElementById('modal-' + type).classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  // Close modal if user clicks the dark overlay (not the modal itself)
+  function closeModalOnBg(event, type) {
+    if (event.target === event.currentTarget) closeModal(type);
+  }
+
+  // Switch between sign in and sign up
+  function switchModal(from, to) {
+    closeModal(from);
+    openModal(to);
+  }
+
+  // Close modal on Escape key
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      ['signin', 'signup'].forEach(closeModal);
+    }
+  });
+
+  // ============================================================
+  // BASIC WRITE TOOLBAR (demo only)
+  // ============================================================
+  function formatText(type) {
+    const body = document.getElementById('draft-body');
+    const msgs = {
+      bold: '**bold text**',
+      italic: '_italic text_',
+      h1: '\n# Heading 1\n',
+      h2: '\n## Heading 2\n',
+      quote: '\n> Your blockquote here\n',
+      code: '\n```\ncode here\n```\n'
+    };
+    body.value += msgs[type] || '';
+    body.focus();
+  }
+</script>
+
+</body>
+</html>
